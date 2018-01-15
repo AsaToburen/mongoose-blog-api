@@ -3,22 +3,21 @@
 const mongoose = require('mongoose');
 
 const blogSchema = mongoose.Schema({
-	title: { type: String, required: true },
-	content: { type: String, required: true },
 	author: {
 		firstName: String,
 		lastName: String
 	},
-	publishDate: { type: Date, required: true }
+	title: { type: String, required: true },
+	content: { type: String },
+	created: { type: Date, default: Date.now }
 });
 
 blogSchema.methods.serialize = function() {
 	return {
 		id: this._id,
-		title: this.title,
 		content: this.content,
-		author: this.author,
-		publishDate: this.publishDate
+		title: this.title,
+		created: this.created
 	};
 };
 

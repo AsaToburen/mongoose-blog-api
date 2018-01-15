@@ -1,32 +1,27 @@
 'use strict';
 
 const bodyParser = require('body-parser');
-const morgan = require('morgan');
 const express = require('express');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
-
 mongoose.Promise = global.Promise;
 
-const { PORT, DATABASE_URL } = require('./config');
+const { DATABASE_URL, PORT } = require('./config');
 const { Blog } = require('./models');
 
-// const blogRouter = require('./blogRouter');
-
 const app = express();
-app.use(bodyParser.json());
+
 app.use(morgan('common'));
-
-app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
-});
-
-// app.use('/blog', blogRouter);
+app.use(bodyParser.json());
 
 app.get('/posts', (req, res) => {
 	Blog.find()
-		.limit(10)
 		.then(posts => {
-			console.log('posts', posts);
+			res.json(posts.map(post => post.serialize()));
+		})
+		.catch(err => {
+			console.error(err);
+			res.status(500).json({ error: 'something went terribly wrong' });
 		});
 });
 
