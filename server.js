@@ -16,6 +16,10 @@ const app = express();
 app.use(morgan('common'));
 app.use(bodyParser.json());
 
+app.get('/', function(req, res) {
+	res.sendFile(__dirname + '/index.html');
+});
+
 app.use('/posts', blogRouter);
 
 app.use('*', function(req, res) {
