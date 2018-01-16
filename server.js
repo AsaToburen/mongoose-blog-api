@@ -9,20 +9,17 @@ mongoose.Promise = global.Promise;
 const { DATABASE_URL, PORT } = require('./config');
 const { Blog } = require('./models');
 
+const blogRouter = require('./blogRouter');
+
 const app = express();
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
 
-app.get('/posts', (req, res) => {
-	Blog.find()
-		.then(posts => {
-			res.json(posts.map(post => post.serialize()));
-		})
-		.catch(err => {
-			console.error(err);
-			res.status(500).json({ error: 'something went terribly wrong' });
-		});
+app.use('/posts', blogRouter);
+
+app.use('*', function(req, res) {
+	res.status(404).json({ message: 'Not Found' });
 });
 
 let server;
